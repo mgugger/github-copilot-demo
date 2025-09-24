@@ -9,10 +9,13 @@
     ],
     "servers": {
         "playwright": {
-            "command": "npx",
+            "command": "docker",
             "args": [
-                "@playwright/mcp@latest",
-                "--browser=msedge"
+                "run",
+                "-i",
+                "--rm",
+                "--init",
+                "mcr.microsoft.com/playwright/mcp"
             ]
         },
         "github": {

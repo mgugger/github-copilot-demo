@@ -13,7 +13,7 @@ const getBaseUrl = () => {
         console.log('Using runtime config API_URL:', window.RUNTIME_CONFIG.API_URL);
         return window.RUNTIME_CONFIG.API_URL;
     }
-    
+
     // Check if we're in a Codespace
     const codespaceName = process.env.CODESPACE_NAME;
     if (codespaceName) {
@@ -23,11 +23,16 @@ const getBaseUrl = () => {
         console.log(`Using Codespace URL with ${protocolToUse} protocol`);
         return `${protocolToUse}://${codespaceName}-3000.app.github.dev`;
     }
-    
-    // Auto-detect protocol for local development
+
+    // Use the same origin as the frontend for API requests
+    if (typeof window !== 'undefined' && window.location.origin) {
+        const baseURL = window.location.origin.split(':').slice(0, 2).join(':') + ':3000';
+        console.log(`Using window.location.origin for API base URL: ${baseURL}`);
+        return baseURL;
+    }
+
     const protocol = typeof window !== 'undefined' ? window.location.protocol : 'http:';
     const protocolToUse = protocol.includes('https') ? 'https' : 'http';
-    console.log(`Using default localhost URL with ${protocolToUse} protocol`);
     return `${protocolToUse}://localhost:3000`;
 };
 

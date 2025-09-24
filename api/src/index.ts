@@ -14,24 +14,15 @@ import supplierRoutes from './routes/supplier';
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Parse CORS origins from environment variable if available
-const corsOrigins = process.env.API_CORS_ORIGINS 
-  ? process.env.API_CORS_ORIGINS.split(',')
-  : [
-      'http://localhost:5137', 
-      'http://localhost:3001',
-      // Allow all Codespace domains
-      /^https:\/\/.*\.app\.github\.dev$/
-    ];
-
-console.log('Configured CORS origins:', corsOrigins);
-
 // Enable CORS for the frontend
 app.use(cors({
-  origin: corsOrigins,
+  origin: (origin, callback) => {
+    // allow requests with no origin (e.g. server-to-server, curl) and all browser origins
+    callback(null, true);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Allow credentials
+  credentials: true
 }));
 
 const swaggerOptions = {
